@@ -15,3 +15,5 @@ dist
 
 *.swp
 *~
+
+conf/application.conf
