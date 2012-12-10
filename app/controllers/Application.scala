@@ -14,7 +14,8 @@ object Application extends Controller with Secured {
   }
 
   def feed = withUser { user => implicit request =>
-    Ok("Hello " + user.firstName + " " + user.lastName)
+    val activityList = User.getFriendsActivity(user)
+    Ok(views.html.feed(user, activityList))
   }
 
 }

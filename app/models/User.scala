@@ -10,6 +10,11 @@ case class User(mail: String,
                 facebookAccessToken: String,
                 facebookId: String)
 
+case class ActivityRow(friendFirstName: String,
+                       friendFacebookUserName: String,
+                       activityType: String,
+                       locusName: String)
+
 object User {
 
   val userParser: CypherRowParser[User] = {
@@ -60,6 +65,29 @@ object User {
               "facebookAccessToken" -> facebookAccessToken)
           .as(userParser *)
           .headOption
+  }
+
+  def getFriendsActivity(user: User) = {
+
+    val activityParser: CypherRowParser[ActivityRow] = {
+      str("friend.firstName") ~
+      str("friend.facebookUserName") ~ 
+      str("activityType") ~
+      str("locus.name") map {
+        case firstName ~ facebookUserName ~ activityType ~ locusName =>
+          ActivityRow(firstName, facebookUserName, activityType, locusName)
+      }
+    }
+
+    Cypher("""
+      START user=node:node_auto_index(facebookUserName={userName})
+      MATCH user-[:FRIEND_OF]->friend-[activity]->locus
+      WHERE locus.type="locus"
+      RETURN friend.firstName, friend.facebookUserName, type(activity) as activityType, locus.name
+      ORDER BY activity.date DESC
+      LIMIT 20
+      """).on("userName" -> user.facebookUserName)
+          .as(activityParser *)
   }
 
 }
