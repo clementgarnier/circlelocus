@@ -39,7 +39,6 @@ object Application extends Controller with Secured {
     "&v=20121210"
 
     val ws = WS.url(foursquareUrl).get()
-      play.Logger.info(foursquareUrl)
     Async {
       ws.map { result =>
         result.status match {

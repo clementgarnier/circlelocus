@@ -5,6 +5,9 @@ import play.api.libs.json._
 import org.anormcypher._
 import org.anormcypher.CypherParser._
 
+import play.api.libs.ws.WS
+import play.api.Play.current
+
 case class LocusActivityRow(friendFirstName: String,
                             friendFacebookUserName: String,
                             activityType: String)
@@ -36,6 +39,39 @@ object Locus {
         (primaryCategory \ "icon" \ "prefix").as[String] + "bg_64" +
           (primaryCategory \ "icon" \ "suffix").as[String]
     )
+  }
+
+  def loadByFoursquareId(foursquareId: String): Option[Locus] = {
+    lazy val foursquareAppId = current.configuration.getString("foursquare.app.id").getOrElse {
+      throw current.configuration.reportError("foursquare.app.id", "Application not properly configured, foursquare.app.id is not defined in application.conf")
+    } 
+
+    lazy val foursquareAppSecret = current.configuration.getString("foursquare.app.secret").getOrElse {
+      throw current.configuration.reportError("foursquare.app.secret", "Application not properly configured, foursquare.app.secret is not defined in application.conf")
+    }
+
+    val foursquareUrl = "https://api.foursquare.com/v2/venues/" +
+      foursquareId +
+      "?client_id=" +
+      foursquareAppId +
+      "&client_secret=" +
+      foursquareAppSecret +
+      "&v=20121210"
+
+    val ws = WS.url(foursquareUrl).get()
+    val result = ws.value.get
+    result.status match {
+      case 200 => {
+        val json = Json.parse(result.body) \ "response" \ "venue"
+        Some(Locus.fromJson(json))
+      }
+      case 400 => {
+        None
+      }
+      case _ => {
+        None
+      }
+    }
   }
 
   def getFriendsActivity(user: User, foursquareId: String) = {

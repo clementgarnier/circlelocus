@@ -18,10 +18,10 @@
             </div>
             } else {
                 @activityList.map { activity =>
-                    <div class="span8 clearfix">
+                    <div class="span8 clearfix feed-item">
                         <img src="http://graph.facebook.com/@activity.friendFacebookUserName/picture" alt="Profile picture" class="pull-left" />
                         <div class="pull-left">
-                            <p>@activity.friendFirstName @activity.activityType @activity.locusName</p>
+                            <h4>@activity.friendFirstName @activity.activityType @activity.locus.name</h4>
                         </div>
                     </div>
                 }
