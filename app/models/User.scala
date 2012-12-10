@@ -89,5 +89,49 @@ object User {
       """).on("userName" -> user.facebookUserName)
           .as(activityParser *)
   }
+  
+  def likeLocus(user: User, foursquareId: String) = {
+    /* Delete DISLIKES relationship if exists */
+    Cypher("""
+      START user=node:node_auto_index(facebookUserName={userName})
+      MATCH user-[dislikeActivity:DISLIKES]->locus
+      WHERE locus.foursquareId = {foursquareId}
+      DELETE dislikeActivity
+      """).on("userName" -> user.facebookUserName, "foursquareId" -> foursquareId)
+          .execute()
+    
+    /* Create LIKES relationship, and locus node if doesn't exist */
+    Cypher("""
+      START user=node:node_auto_index(facebookUserName={userName})
+      CREATE UNIQUE user-[:LIKES]->(m {type: "locus", foursquareId:{foursquareId}})
+      """).on("userName" -> user.facebookUserName, "foursquareId" -> foursquareId)
+          .execute()
+  }
+
+  def dislikeLocus(user: User, foursquareId: String) = {
+    /* Delete LIKES relationship if exists */
+    Cypher("""
+      START user=node:node_auto_index(facebookUserName={userName})
+      MATCH user-[likeActivity:LIKES]->locus
+      WHERE locus.foursquareId = {foursquareId}
+      DELETE likeActivity
+      """).on("userName" -> user.facebookUserName, "foursquareId" -> foursquareId)
+          .execute()
+    
+    /* Create DISLIKES relationship, and locus node if doesn't exist */
+    Cypher("""
+      START user=node:node_auto_index(facebookUserName={userName})
+      CREATE UNIQUE user-[:DISLIKES]->(m {type: "locus", foursquareId:{foursquareId}})
+      """).on("userName" -> user.facebookUserName, "foursquareId" -> foursquareId)
+          .execute()
+  }
+  
+  def wantLocus(user: User, foursquareId: String) = {
+    // TODO
+  }
+  
+  def dontwantLocus(user: User, foursquareId: String) = {
+    // TODO
+  }
 
 }

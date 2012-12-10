@@ -62,4 +62,25 @@ object Locus {
           .as(locusActivityParser *)
   }
 
+  def getUserActivity(user: User, foursquareId: String) = {
+    val activities = Cypher("""
+      START user=node:node_auto_index(facebookUserName={userName})
+      MATCH user-[activity]->locus
+      WHERE locus.foursquareId={locusFoursquareId}
+      RETURN type(activity) as atype
+      """).on("userName" -> user.facebookUserName, "locusFoursquareId" -> foursquareId)
+          .as(str("atype") *)
+
+    ({
+        if(activities.contains("LIKES")) Some(true)
+        else if(activities.contains("DISLIKES")) Some(false)
+        else None
+    }, {
+        if(activities.contains("WANTS")) Some(true)
+        else if(activities.contains("DOESNTWANT")) Some(false)
+        else None
+    })
+  }
+
+
 }

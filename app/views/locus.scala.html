@@ -1,4 +1,4 @@
-@(locus: models.Locus, locusActivityList: List[models.LocusActivityRow])
+@(locus: models.Locus, userActivity: (Option[Boolean], Option[Boolean]), locusActivityList: List[models.LocusActivityRow])(implicit request: play.api.mvc.RequestHeader)
 
 @page {
     
@@ -18,12 +18,20 @@
         </div>
         <div class="span8 locus-actions">
             <p>
-                <button class="btn btn-success" type="button">I like this place</button>
-                <button class="btn btn-danger" type="button">I don't like this place</button>
+                <button class="btn @if(userActivity._1.getOrElse(false)) {
+                    btn-success    
+                }" type="button" data-action="like">I like this place</button>
+                <button class="btn @if(!userActivity._1.getOrElse(true)) {
+                    btn-danger    
+                }" type="button" data-action="dislike">I don't like this place</button>
             </p>
             <p>
-                <button class="btn btn-success" type="button">I want to go to this place</button>
-                <button class="btn btn-danger" type="button">I don't want to go to this place</button>
+                <button class="btn @if(userActivity._2.getOrElse(false)) {
+                    btn-success    
+                }" type="button" data-action="want">I want to go to this place</button>
+                <button class="btn @if(!userActivity._2.getOrElse(true)) {
+                    btn-danger    
+                }" type="button" data-action="dontwant">I don't want to go to this place</button>
             </p>
         </div>
     </div>
@@ -42,8 +50,43 @@
                 </div>
             }
         }
-    </div>
-    
+    </div>    
 } {
+    <script type="text/javascript">
+        @Html(play.api.Routes.javascriptRouter("jsRoutes")(controllers.routes.javascript.Application.likeLocus,
+                                                           controllers.routes.javascript.Application.dislikeLocus,
+                                                           controllers.routes.javascript.Application.wantLocus,
+                                                           controllers.routes.javascript.Application.dontwantLocus))
+    </script>
+    <script type="text/javascript" src="@controllers.routes.Assets.at("javascripts/jquery-1.7.1.min.js")"></script>
+    <script type="text/javascript">
+        var foursquareId = "@locus.foursquareId";
+        
+        $(function() {
+            var $likeButton = $("button[data-action=like]"),
+                $dislikeButton = $("button[data-action=dislike]"),
+                $wantButton = $("button[data-action=want]"),
+                $dontwantButton = $("button[data-action=dontwant]");
+
+            $("button[data-action=like]").click(function() {
+                jsRoutes.controllers.Application.likeLocus(foursquareId).ajax({
+                    success: function() {
+                        $likeButton.addClass("btn-success");
+                        $dislikeButton.removeClass("btn-danger");
+                    }
+                });
+            });
+
+            $("button[data-action=dislike]").click(function() {
+                jsRoutes.controllers.Application.dislikeLocus(foursquareId).ajax({
+                    success: function() {
+                        $likeButton.removeClass("btn-success");
+                        $dislikeButton.addClass("btn-danger");
+                    }
+                });
+            });
+
+        });
+    </script>
 
 }

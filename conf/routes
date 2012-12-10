@@ -7,6 +7,11 @@ GET     /feed                       controllers.Application.feed()
 GET     /nearby                     controllers.Application.nearby()
 GET     /locus/:id                  controllers.Application.locus(id)
 
+GET     /locus/:id/like             controllers.Application.likeLocus(id)
+GET     /locus/:id/dislike          controllers.Application.dislikeLocus(id)
+GET     /locus/:id/want             controllers.Application.wantLocus(id)
+GET     /locus/:id/dontwant         controllers.Application.dontwantLocus(id)
+
 GET     /login/:code                controllers.Auth.doFacebookAuth(code)
 
 GET     /assets/*file               controllers.Assets.at(path="/public", file)       

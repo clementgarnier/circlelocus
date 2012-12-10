@@ -75,8 +75,10 @@ object Application extends Controller with Secured {
         result.status match {
           case 200 => {
             val json = Json.parse(result.body) \ "response" \ "venue"
+            val locus = Locus.fromJson(json)
+            val userActivity = Locus.getUserActivity(user, foursquareId)
             val locusActivity = Locus.getFriendsActivity(user, foursquareId)
-            Ok(views.html.locus(Locus.fromJson(json), locusActivity))
+            Ok(views.html.locus(locus, userActivity, locusActivity))
           }
           case 400 => {
             NotFound
@@ -88,6 +90,27 @@ object Application extends Controller with Secured {
       }
     }
   }
+
+  def likeLocus(foursquareId: String) = withUser { user => implicit request =>
+    User.likeLocus(user, foursquareId)
+    Ok
+  }
+
+  def dislikeLocus(foursquareId: String) = withUser { user => implicit request =>
+    User.dislikeLocus(user, foursquareId)
+    Ok
+  }
+  
+  def wantLocus(foursquareId: String) = withUser { user => implicit request =>
+    User.wantLocus(user, foursquareId)
+    Ok
+  }
+
+  def dontwantLocus(foursquareId: String) = withUser { user => implicit request =>
+    User.dontwantLocus(user, foursquareId)
+    Ok
+  }
+
 }
 
 trait Secured {
