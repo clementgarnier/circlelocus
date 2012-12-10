@@ -1,4 +1,4 @@
-@(locus: models.Locus)
+@(locus: models.Locus, locusActivityList: List[models.LocusActivityRow])
 
 @page {
     
@@ -11,6 +11,37 @@
                 <p>@locus.address.map(_+", ").getOrElse("")@locus.postalCode.map(_+", ").getOrElse("")@locus.city.getOrElse("")</p>
             </div>
         </div>
+    </div>
+    <div class="row">
+        <div class="span8">
+            <h4>Your activity</h4>
+        </div>
+        <div class="span8 locus-actions">
+            <p>
+                <button class="btn btn-success" type="button">I like this place</button>
+                <button class="btn btn-danger" type="button">I don't like this place</button>
+            </p>
+            <p>
+                <button class="btn btn-success" type="button">I want to go to this place</button>
+                <button class="btn btn-danger" type="button">I don't want to go to this place</button>
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span8">
+            <h4>Friends activity</h4>
+        </div>
+        @if(locusActivityList.isEmpty) {
+        <div class="span8 no-activity">
+            <p>None of your friends has interacted with this place yet.</p>
+        </div>
+        } else {
+            @locusActivityList.map { locusActivity =>
+                <div class="span8 clearfix">
+                    <p>@locusActivity.friendFirstName @locusActivity.activityType this place.</p>
+                </div>
+            }
+        }
     </div>
     
 } {

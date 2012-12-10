@@ -75,7 +75,8 @@ object Application extends Controller with Secured {
         result.status match {
           case 200 => {
             val json = Json.parse(result.body) \ "response" \ "venue"
-            Ok(views.html.locus(Locus.fromJson(json)))
+            val locusActivity = Locus.getFriendsActivity(user, foursquareId)
+            Ok(views.html.locus(Locus.fromJson(json), locusActivity))
           }
           case 400 => {
             NotFound

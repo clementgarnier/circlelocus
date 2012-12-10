@@ -2,6 +2,13 @@ package models
 
 import play.api.libs.json._
 
+import org.anormcypher._
+import org.anormcypher.CypherParser._
+
+case class LocusActivityRow(friendFirstName: String,
+                            friendFacebookUserName: String,
+                            activityType: String)
+
 case class Locus(foursquareId: String,
                  name: String = "",
                  address: Option[String] = None, 
@@ -32,6 +39,27 @@ object Locus {
         (primaryCategory \ "icon" \ "prefix").as[String] + "bg_64" +
           (primaryCategory \ "icon" \ "suffix").as[String]
     )
+  }
+
+  def getFriendsActivity(user: User, foursquareId: String) = {
+    val locusActivityParser: CypherRowParser[LocusActivityRow] = {
+      str("friend.firstName") ~
+      str("friend.facebookUserName") ~ 
+      str("activityType") map {
+        case firstName ~ facebookUserName ~ activityType =>
+          LocusActivityRow(firstName, facebookUserName, activityType)
+      }
+    }
+
+    Cypher("""
+      START user=node:node_auto_index(facebookUserName={userName})
+      MATCH user-[:FRIEND_OF]->friend-[activity]->locus
+      WHERE locus.foursquareId={locusFoursquareId}
+      RETURN friend.firstName, friend.facebookUserName, type(activity) as activityType
+      ORDER BY activity.date DESC
+      LIMIT 20
+      """).on("userName" -> user.facebookUserName, "locusFoursquareId" -> foursquareId)
+          .as(locusActivityParser *)
   }
 
 }

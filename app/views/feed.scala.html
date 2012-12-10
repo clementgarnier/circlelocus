@@ -11,22 +11,22 @@
                 </div>
             </div>
         </div>
-        <ul class="row">
+        <div class="row">
             @if(activityList.isEmpty) {
             <div class="span8 no-activity">
                 <h4>No activity yet. You should add more friends!</h4>
             </div>
             } else {
-                @activityList.foreach { activity =>
-                    <li class="span8 clearfix">
+                @activityList.map { activity =>
+                    <div class="span8 clearfix">
                         <img src="http://graph.facebook.com/@activity.friendFacebookUserName/picture" alt="Profile picture" class="pull-left" />
                         <div class="pull-left">
                             <p>@activity.friendFirstName @activity.activityType @activity.locusName</p>
                         </div>
-                    </li>
+                    </div>
                 }
             }
-        </ul>
+        </div>
     </div>
 } {
 
