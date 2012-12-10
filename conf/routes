@@ -4,6 +4,8 @@
 
 GET     /                           controllers.Application.index()
 GET     /feed                       controllers.Application.feed()
+GET     /nearby                     controllers.Application.nearby()
+GET     /locus/:id                  controllers.Application.locus(id)
 
 GET     /login/:code                controllers.Auth.doFacebookAuth(code)
 

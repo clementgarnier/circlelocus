@@ -38,3 +38,6 @@ logger.application=DEBUG
 facebook.app.id=""
 facebook.app.secret=""
 
+foursquare.app.id=""
+foursquare.app.secret=""
+

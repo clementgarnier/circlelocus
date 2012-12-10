@@ -1,0 +1,18 @@
+@(locus: models.Locus)
+
+@page {
+    
+    <div class="row" id="locus">
+        <div class="span8 clearfix locus">
+            <img src="@locus.icon" alt="Category icon" class="pull-left" />
+            <div class="pull-left">
+                <h4>@locus.name</h4>
+                <p>@locus.category</p>
+                <p>@locus.address.map(_+", ").getOrElse("")@locus.postalCode.map(_+", ").getOrElse("")@locus.city.getOrElse("")</p>
+            </div>
+        </div>
+    </div>
+    
+} {
+
+}

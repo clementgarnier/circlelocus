@@ -1,0 +1,25 @@
+@(nearbyPlaces: List[models.Locus])
+
+@page {
+    <div id="nearby">
+        <div class="row">
+            <div class="span8">
+                <h2>Nearby places</h2>
+            </div>
+        </div>
+        <div class="row">
+            @nearbyPlaces.map { place => 
+            <a href="@controllers.routes.Application.locus(place.foursquareId)" class="span8 clearfix locus">
+                <img src="@place.icon" alt="Category icon" class="pull-left" />
+                <div class="pull-left">
+                    <h4>@place.name</h4>
+                    <p>@place.category</p>
+                    <p>@place.address.map(_+", ").getOrElse("")@place.postalCode.map(_+", ").getOrElse("")@place.city.getOrElse("")</p>
+                </div>
+            </a>
+        }
+        </div>
+    </div>
+} {
+
+}
