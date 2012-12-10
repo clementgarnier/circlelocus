@@ -3,3 +3,8 @@
 # ~~~~
 
 GET     /                           controllers.Application.index()
+GET     /feed                       controllers.Application.feed()
+
+GET     /login/:code                controllers.Auth.doFacebookAuth(code)
+
+GET     /assets/*file               controllers.Assets.at(path="/public", file)       

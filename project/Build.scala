@@ -9,7 +9,8 @@ object ApplicationBuild extends Build {
 
     val appDependencies = Seq(
       // Add your project dependencies here,
-      "org.anormcypher" %% "anormcypher" % "0.2.1"
+      "org.anormcypher" %% "anormcypher" % "0.2.1",
+      "com.restfb" % "restfb" % "1.6.11"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies).settings(

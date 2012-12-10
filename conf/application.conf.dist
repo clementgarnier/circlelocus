@@ -35,3 +35,6 @@ logger.play=INFO
 # Logger provided to your application:
 logger.application=DEBUG
 
+facebook.app.id=""
+facebook.app.secret=""
+
