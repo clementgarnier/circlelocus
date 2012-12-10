@@ -47,7 +47,7 @@ object User {
              facebookId: String, 
              facebookAccessToken: String) = {
     Cypher("""
-      create
+      CREATE
         (user {
           email: {email},
           firstName: {firstName},
@@ -56,7 +56,7 @@ object User {
           facebookId: {facebookId},
           facebookAccessToken: {facebookAccessToken}
         })
-      return user.email, user.firstName, user.lastName, user.facebookUserName, user.facebookAccessToken, user.facebookId
+      RETURN user.email, user.firstName, user.lastName, user.facebookUserName, user.facebookAccessToken, user.facebookId
       """).on("email" -> email,
               "firstName" -> firstName, 
               "lastName" -> lastName,

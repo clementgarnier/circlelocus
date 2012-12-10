@@ -25,9 +25,6 @@ object Locus {
     val location = j \ "location"
     val primaryCategory = (j \ "categories").as[List[JsValue]].head
 
-    play.Logger.info(location.toString)
-    play.Logger.info(primaryCategory.toString)
-
     Locus((j \ "id").as[String],
         (j \ "name").as[String],
         (location \ "address").asOpt[String],
