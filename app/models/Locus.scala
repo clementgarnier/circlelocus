@@ -86,7 +86,7 @@ object Locus {
 
     Cypher("""
       START user=node:node_auto_index(facebookUserName={userName})
-      MATCH user-[:FRIEND_OF]->friend-[activity]->locus
+      MATCH user-[:FRIEND_OF]->friend-[activity:LIKES|DISLIKES]->locus
       WHERE locus.foursquareId={locusFoursquareId}
       RETURN friend.firstName, friend.facebookUserName, type(activity) as activityType
       ORDER BY activity.date DESC
@@ -98,7 +98,7 @@ object Locus {
   def getUserActivity(user: User, foursquareId: String) = {
     val activities = Cypher("""
       START user=node:node_auto_index(facebookUserName={userName})
-      MATCH user-[activity]->locus
+      MATCH user-[activity:LIKES|DISLIKES]->locus
       WHERE locus.foursquareId={locusFoursquareId}
       RETURN type(activity) as atype
       """).on("userName" -> user.facebookUserName, "locusFoursquareId" -> foursquareId)

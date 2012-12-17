@@ -83,8 +83,7 @@ object User {
 
     Cypher("""
       START user=node:node_auto_index(facebookUserName={userName})
-      MATCH user-[:FRIEND_OF]->friend-[activity]->locus
-      WHERE locus.type="locus"
+      MATCH user-[:FRIEND_OF]->friend-[activity:LIKES|DISLIKES]->locus
       RETURN friend.firstName, friend.facebookUserName, type(activity) as activityType, locus.foursquareId
       ORDER BY activity.date DESC
       LIMIT 20
